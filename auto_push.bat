@@ -1,6 +1,6 @@
 @echo off
 :: =========================================
-:: LeetCode 刷题自动上传脚本
+:: 自动上传 .cpp 代码到 GitHub 的脚本
 :: 功能：自动添加、提交、推送到 GitHub
 :: 路径：D:\Leetcode刷题
 :: 分支：main
@@ -27,26 +27,41 @@ if not exist ".git" (
     )
 )
 
-:: 添加所有新增或修改的文件
-echo 正在添加文件到暂存区...
-git add .
+:: 添加所有 .cpp 文件，但不包括 auto_push.bat
+echo 正在添加 .cpp 文件到暂存区...
+git add *.cpp
+git reset -- auto_push.bat
 
 :: 检查是否有文件需要提交
 git diff --cached --quiet
 if %errorlevel% equ 0 (
-    echo 没有文件需要提交，所有代码已是最新状态。
+    echo 没有 .cpp 文件需要提交，所有代码已是最新状态。
 ) else (
     :: 获取当前时间作为提交信息
     for /f "tokens=2 delims==" %%i in ('"wmic os get localdatetime /value"') do set datetime=%%i
     set commit_time=%datetime:~0,4%-%datetime:~4,2%-%datetime:~6,2% %datetime:~8,2%:%datetime:~10,2%
-    
-    echo 正在提交更改...
-    git commit -m "📝 提交 LeetCode 刷题记录 - %commit_time%"
-    
-    if %errorlevel% neq 0 (
-        echo 提交失败，请检查是否有冲突或 Git 配置问题。
-        pause
-        exit /b 1
+
+    :: 获取所有被添加的 .cpp 文件名并生成提交信息
+    set commit_message=""
+    for /f "delims=" %%f in ('git diff --name-only --cached -- "*.cpp"') do (
+        if defined commit_message (
+            set commit_message=!commit_message!; %%f
+        ) else (
+            set commit_message=%%f
+        )
+    )
+
+    if defined commit_message (
+        echo 正在提交更改...
+        git commit -m "📝 提交 .cpp 代码 - %commit_message%"
+        
+        if %errorlevel% neq 0 (
+            echo 提交失败，请检查是否有冲突或 Git 配置问题。
+            pause
+            exit /b 1
+        )
+    ) else (
+        echo 没有 .cpp 文件需要提交，所有代码已是最新状态。
     )
 )
 
