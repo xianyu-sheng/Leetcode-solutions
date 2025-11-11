@@ -45,3 +45,71 @@ int main(){
     cout <<  result << endl;
     return 0;
 }
+
+//方法2  使用kruskal方法来进行解答
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <algorithm>
+using namespace std;
+
+//l  r  为两个节点 val为权重
+struct Edge{
+    int l,r,val;
+};
+//节点数量
+int  n=10001;
+vector<int> father(n,-1);
+
+//初始化
+void  init(){
+    for(int i=0;i<n;i++){
+        father[i]=i;
+    }
+}
+//查找函数
+int find(int u){
+    return u==father[u]?u:(father[u]=find(father[u]));
+}
+//查看是否在同一个集合
+bool  isSame(int u,int v){
+    u=find(u);
+    v=find(v);
+    return u==v;
+}
+//加入到并差集
+void  join(int u,int v){
+    u=find(u);
+    v=find(v);
+    if(u==v)    return;
+    father[v]=u;
+}
+
+int main(){
+    int v,e;
+    cin >> v >> e;
+    int v1,v2,val;
+    vector<Edge> edges;
+    while(e--){
+        cin >> v1 >> v2 >> val;
+        edges.push_back({v1,v2,val});
+    }
+    //将所有边按照从大到小的顺序排好
+    sort(edges.begin(),edges.end(),[](const Edge& a,const Edge& b){
+        return a.val<b.val;
+    });
+    //然后开始进行加入
+    init();
+    int result=0;
+    for(auto edge : edges){
+        int x=find(edge.l);
+        int y=find(edge.r);
+        if(x!=y){
+            //代表两个节点并没有加入到最小生成树 那么现在就可以进行结果值的相加 并且将其加入到最小生成树
+            result+=edge.val;
+            join(x,y);
+        }
+    }
+    cout << result << endl;
+    return 0;
+}
