@@ -53,6 +53,9 @@ int main(){
 #include <climits>
 using  namespace  std;
 
+/*
+	了 是不是其实在我们外部来看只在意这个比较函数是不是返回true是吧  如果返回treu那么说明后面的b有更高的优先级，而如果我们想要排序大根堆的话 就直接这样  a.second  <  b.second就行  而如果我们想要建立小根堆  那么就需要使用这样  a.second > b.second  这样如果我们的比较函数返回true的话，因为b有更高的优先级 那么就会将b放到更上面是吗？  我这么理解可对  其实我们的堆的生成默认就是后面的b有跟高的优先级 就看里面怎么实现
+*/
 class  mycompre{
     public:
         bool operator()(const pair<int,int>& a,const pair<int,int>& b){
