@@ -46,3 +46,58 @@ int main(){
     else    cout << mindist[end] << endl;
     return 0;
 }
+#include <iostream>
+#include <list>
+#include <queue>
+#include  <vector>
+#include <climits>
+using  namespace  std;
+
+class  mycompre{
+    public:
+        bool operator()(const pair<int,int>& a,const pair<int,int>& b){
+            return a.second > b.second;
+        }
+};
+struct Edge{
+    int to; //邻接顶点
+    int val;    //边的权重
+
+    Edge(int t,int v):to(t),val(v){}//构造函数
+};
+int main(){
+    int  n,m,p1,p2,val;
+    cin >> n >> m;  //n个汽车站   m条公路
+    vector<list<Edge>>   grid(n+1);
+    //领接表的构造
+    for(int i=0;i<m;i++){
+        cin >> p1 >> p2 >> val;
+        grid[p1].push_back(Edge(p2,val));
+    }
+    //最小距离 以及 小根堆  以及 访问数组
+    int  start=1;
+    int end =n;
+    vector<int>  mindist(n+1,INT_MAX);
+    vector<bool> visited(n+1,false);
+    //小根堆
+    priority_queue<pair<int, int>, vector<pair<int, int>>, mycompre> pq;
+    pq.push(pair<int,int>(start,0));
+    mindist[start]=0;
+    while(!pq.empty()){
+        //1.取出距离源点最近的节点
+        pair<int,int> cur=pq.top();pq.pop();
+        if(visited[cur.first])  continue;
+        //2.标记访问
+        visited[cur.first]=true;
+        //3.更新距离当前节点的距离
+        for(Edge edge : grid[cur.first]){
+            if(!visited[edge.to] && mindist[cur.first]+edge.val<mindist[edge.to]){
+                mindist[edge.to]=mindist[cur.first]+edge.val;
+                pq.push(pair<int,int>(edge.to,mindist[edge.to]));
+            }
+        }
+    }
+    if(mindist[end]==INT_MAX)   cout << -1 << endl;
+    else cout << mindist[end] << endl;
+    return 0;
+}
