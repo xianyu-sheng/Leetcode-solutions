@@ -1,0 +1,32 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+int main(){
+    int src,dst,k,n,m,p1,p2,val;
+    cin >> n >> m;
+    vector<vector<int>> grid;
+    while(m--){
+        cin >> p1 >> p2 >> val;
+        grid.push_back({p1,p2,val});
+    }
+    //输入起点  终点
+    cin  >> src >> dst >> k;
+    //设置数组
+    vector<int> mindist(n+1,INT_MAX);
+    mindist[src]=0;
+    vector<int> min_copy;
+    for(int i=1;i<=k+1;i++){
+        min_copy=mindist;
+        for(vector<int> &side : grid){
+            int from=side[0];
+            int to=side[1];
+            int prices=side[2];
+            if(min_copy[from]!=INT_MAX && mindist[to]>min_copy[from]+prices)
+                mindist[to]=min_copy[from]+prices;
+        }
+    }
+    if(mindist[dst]==INT_MAX)   cout << "unreachable" << endl;
+    else cout << mindist[dst] << endl;
+}
