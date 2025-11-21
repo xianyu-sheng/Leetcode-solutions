@@ -40,5 +40,42 @@ public:
         reverse(nums.begin(),nums.end());
     }
 };
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        /*
+            解题思路：解决办法1  先整体翻转，在局部进行翻转
+        */
+        int n=nums.size();
+        if(n==0)    return;
+        k%=n;
+        reverse(nums.begin(),nums.end());
+        //然后局部翻转
+        reverse(nums.begin(),nums.begin()+k);
+        reverse(nums.begin()+k,nums.end());
+    }
+};
+//环状数组解法
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+    int n = nums.size();
+    if (n == 0) return;
+    k %= n;
+    if (k == 0) return;
+
+    int count = 0;          // 已安放元素个数
+    for (int start = 0; count < n; ++start) {
+        int cur = start;
+        int prev = nums[cur];   // 手里攥着“被挤出来”的值
+        do {
+            int next = (cur + k) % n;   // 目标位置
+            swap(prev, nums[next]);     // prev 进去，把里面的值换出来
+            cur = next;
+            ++count;
+        } while (cur != start);         // 回到起点说明这一圈跑完
+    }
+}
+};
 // @lc code=end
 
