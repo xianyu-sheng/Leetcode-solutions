@@ -65,5 +65,46 @@ public:
         return root;
     }
 };
+//方法2 递归
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+*/
+
+class Solution {
+public:
+    void  traversal(Node* cur){
+        if(cur==NULL)   return;
+        //然后对下一层的节点互相拉网 这里注意的是 如果我自己就是最边上的节点了 那么我的右孩子也是最边上的节点
+        if(cur->left)   cur->left->next=cur->right;
+        if(cur->right){
+            if(cur->next)   cur->right->next=cur->next->left;
+            else    cur->right->next=NULL;
+        }
+        traversal(cur->left);
+        traversal(cur->right);
+    }
+    Node* connect(Node* root) {
+        //使用层序遍历  这样自然的就会是这样 如果我不是最后一个元素 那么我就可以将下一个元素先top()出来 然后获得其
+        //值 然后我们在继续下一步 如果已经是最后一个元素了 也就是弹出后在检查一次就行
+
+        //使用一个队列容器来进行存储
+        traversal(root);
+        return root;
+    }
+};
 // @lc code=end
 
