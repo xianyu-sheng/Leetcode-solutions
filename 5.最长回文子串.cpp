@@ -47,5 +47,39 @@ public:
         return  s.substr(best_left,best_right-best_left+1);
     }
 };
+//动态规划法
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        //使用动态规划来记性解答
+        vector<vector<bool>> dp(s.size(),vector<bool>(s.size(),false));
+        int max_length=0;
+        int left=0;
+        int right=0;
+        //然后开始推导dp数组  从下往上 从左到右
+        for(int i=s.size()-1;i>=0;i--){
+            for(int j=i;j<s.size();j++){
+                //直接给出如果i j 相等时候的情况
+                if(s[i]==s[j]){
+                    //如果是j-i <=1 你们说明这是一个长度为2 或者长度为1 的字符串 他必然是回文字符串
+                    if(j-i <= 1){
+                        dp[i][j]=true;
+                    }else if(dp[i+1][j-1]){
+                        //如果排除掉两侧的字符，看看中间的字符是不是回文的
+                        dp[i][j]=true;
+                    }
+                }
+                //然后来统计这个最长的字符串
+                if(dp[i][j] && j-i+1 > max_length){
+                    max_length=j-i+1;
+                    left=i;
+                    right=j;
+                }
+            }
+        }
+        return s.substr(left,right-left+1);
+    }
+};
+
 // @lc code=end
 
