@@ -25,5 +25,22 @@ public:
         return rel;
     }
 };
+//小顶堆逻辑
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        /*
+            使用优先级队列来解决问题，这里我们需要的是在自己定义一个比较函数-->来告诉优先级队列我的较大的数值
+            排前面，然后再依次取出第K个元素就好
+        */
+        priority_queue<int,vector<int>,greater<int>> min_pre;
+        for(auto num:nums){
+            min_pre.push(num);
+            if(min_pre.size()>k)    min_pre.pop();
+        }
+        return min_pre.top();
+    }
+};
+//基于快速排序的解法
 // @lc code=end
 
