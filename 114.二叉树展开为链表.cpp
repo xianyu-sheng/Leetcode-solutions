@@ -51,5 +51,25 @@ public:
         }
     }
 };
+//方法2：原地走 每次将当前节点的右节点接到左子树的最右节点上，然后将左子树移到右子树位置
+//然后不断的更新
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        TreeNode* cur = root;
+        while (cur) {
+            if (cur->left) {               // 有左子树才需要“拆插”
+                TreeNode* pre = cur->left; // 找左子树最右节点
+                while (pre->right) pre = pre->right;
+                // 把原右子树接到左子树最右节点后面
+                pre->right = cur->right;
+                // 左子树整体移到右边
+                cur->right = cur->left;
+                cur->left  = nullptr;      // 左指针置空
+            }
+            cur = cur->right;              // 继续往右走
+        }
+    }
+};
 // @lc code=end
 
