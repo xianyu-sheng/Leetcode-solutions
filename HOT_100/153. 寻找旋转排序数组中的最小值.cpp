@@ -27,7 +27,7 @@ public:
         return nums[left];
     }
 };
-//如果题目要求求最大值  那么就使用left不断作为参考
+//如果题目要求求最大值  那么就使用left不断作为参考  或者直接就在最小值的左边(index - 1 + n) % n
 class Solution {
 public:
     int findMax(vector<int>& nums) {
