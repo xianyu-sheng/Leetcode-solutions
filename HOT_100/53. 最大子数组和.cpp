@@ -34,3 +34,54 @@ public:
         return ans;
     }
 };
+
+//ACM模式
+#include <iostream>
+#include <vector>
+#include <climits>    // 提供 INT_MIN 的定义
+#include <algorithm>  // 提供 max 和 min 函数
+
+using namespace std;
+
+// 1. 你的核心算法类
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int ans = INT_MIN;
+        int min_pre_sum = 0;
+        int pre_sum = 0;
+
+        for(int x : nums){
+            pre_sum += x;
+            // 贪心：当前前缀和 减去 之前出现过的最小前缀和，得到以当前元素结尾的最大子数组和
+            ans = max(ans, pre_sum - min_pre_sum);
+            // 维护最小前缀和
+            min_pre_sum = min(min_pre_sum, pre_sum);
+        }
+        return ans;
+    }
+};
+
+// 2. 极简 Main 函数
+int main() {
+    int n;
+    
+    // 循环读取，支持多组测试用例
+    // 先读取数组长度 n
+    while (cin >> n) {
+        // 如果 n 为 0，可以直接跳出或处理下一个用例
+        if (n == 0) continue; 
+        
+        vector<int> nums(n);
+        // 循环读取 n 个数组元素
+        for (int i = 0; i < n; i++) {
+            cin >> nums[i];
+        }
+        
+        // 调用算法并输出结果
+        Solution sol;
+        cout << sol.maxSubArray(nums) << endl;
+    }
+
+    return 0;
+}
