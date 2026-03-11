@@ -1,0 +1,103 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+/*
+  层序遍历建树
+  TreeNode* buildTree(const vector<int>& nums){
+    if(nums.empty() || nums[0]==-1)   return nullptr;
+
+    TreeNode* root=new TreeNode(nums[0]);
+    queue<TreeNode*> q;
+    q.push(root);
+
+    int i=1;
+    while(!q.empty() && i<nums.size()){
+        TreeNode* curr=q.front();q.pop();
+
+        //处理左子节点
+        if(nums[i]!=-1){
+            curr->left=new TreeNode(nums[i]);
+            q.push(curr->left);
+        }
+        i++;
+
+        //处理右子节点（修正：创建后必须入队）
+        if(i<nums.size() && nums[i]!=-1){
+            curr->right=new TreeNode(nums[i]);
+            q.push(curr->right); // 关键：将右子节点加入队列，继续构建下层
+        }
+        i++;
+    }
+    return root;
+}
+*/
+// 前序遍历建树（核心：递归+引用索引）
+TreeNode* buildTree(vector<int>& nums, int& i) {
+    // 终止条件：索引越界 或 当前值为-1（代表null）
+    if (i >= nums.size() || nums[i] == -1) {
+        i++; // 跳过-1，继续处理下一个节点
+        return nullptr;
+    }
+    // 1. 建当前根节点
+    TreeNode* root = new TreeNode(nums[i]);
+    i++; // 索引后移，处理左子树
+    // 2. 递归建左子树
+    root->left = buildTree(nums, i);
+    // 3. 递归建右子树
+    root->right = buildTree(nums, i);
+    return root;
+}
+
+// 层序遍历逻辑（和之前一致，无修改）
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector<vector<int>> ans;
+    if (root == nullptr) return ans;
+    queue<TreeNode*> que;
+    que.push(root);
+    while (!que.empty()) {
+        int levelSize = que.size();
+        vector<int> currentLevel;
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode* cur = que.front(); que.pop();
+            currentLevel.push_back(cur->val);
+            if (cur->left) que.push(cur->left);
+            if (cur->right) que.push(cur->right);
+        }
+        ans.push_back(currentLevel);
+    }
+    return ans;
+}
+
+int main() {
+    // 前序数组：对应题目示例 [3,9,null,null,20,15,null,null,7,null,null]
+    vector<int> nums = {3,9,-1,-1,20,15,-1,-1,7,-1,-1};
+    int i = 0; // 遍历数组的索引（必须传引用，保证递归中共享）
+    TreeNode* root = buildTree(nums, i);
+    
+    // 层序遍历验证结果
+    vector<vector<int>> result = levelOrder(root);
+    cout << "[";
+    for (int j = 0; j < result.size(); j++) {
+        cout << "[";
+        for (int k = 0; k < result[j].size(); k++) {
+            if (k > 0) cout << ",";
+            cout << result[j][k];
+        }
+        cout << "]";
+        if (j < result.size()-1) cout << ",";
+    }
+    cout << "]" << endl; // 输出：[[3],[9,20],[15,7]]
+    
+    return 0;
+}
