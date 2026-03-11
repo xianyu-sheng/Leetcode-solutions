@@ -1,0 +1,54 @@
+#include <iostream>   // 输入输出必备头文件
+#include <string>     // 字符串处理
+#include <stack>      // 栈结构
+using namespace std;  // 简化代码，避免重复写std::
+
+// 核心逻辑函数：反转字符串中的单词
+string reverseWords(string s) {
+    stack<string> st;
+    int n = s.size();
+    int i = 0;
+    
+    // 1. 分割单词并压入栈（跳过所有空格）
+    while (i < n) {
+        // 跳过前导/中间/尾随空格
+        while (i < n && s[i] == ' ') {
+            i++;
+        }
+        if (i >= n) break; // 无更多单词，退出
+        
+        // 收集当前单词（连续非空格字符）
+        string word;
+        while (i < n && s[i] != ' ') {
+            word += s[i];
+            i++;
+        }
+        st.push(word); // 单词入栈
+    }
+    
+    // 2. 弹出栈中单词，拼接结果
+    string ans;
+    while (!st.empty()) {
+        ans += st.top();
+        st.pop();
+        if (!st.empty()) { // 仅非最后一个单词时加空格
+            ans += " ";
+        }
+    }
+    return ans;
+}
+
+// ACM模式核心：main函数处理输入输出
+int main() {
+    string s;
+    // 关键：用getline读取整行输入（包含空格），cin>>s会自动截断空格
+    getline(cin, s);
+    
+    // 调用核心函数处理
+    string result = reverseWords(s);
+    
+    // 输出结果
+    cout << result << endl;
+    
+    return 0;
+}
