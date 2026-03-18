@@ -54,3 +54,5 @@ public:
         return max_beauty;
     }
 };
+
+//解释：https://gemini.google.com/share/c3f3e97e6146
